@@ -6,11 +6,12 @@ import WatchlistButton from '@/components/WatchlistButton';
 const TMDB_IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/original';
 const TMDB_POSTER_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 
-// Define the Props type explicitly
+// **THE FIX:** Define a Props type that includes both params and searchParams
 type Props = {
     params: {
         id: string;
     };
+    searchParams: { [key: string]: string | string[] | undefined };
 };
 
 async function getMovieDetails(id: string): Promise<MovieDetails> {
@@ -26,7 +27,7 @@ async function getMovieDetails(id: string): Promise<MovieDetails> {
     return res.json();
 }
 
-// Use the explicit Props type and destructure params from it
+// Use the complete Props type. We only need to destructure params for our use case.
 export default async function MovieDetailPage({ params }: Props) {
     const movie = await getMovieDetails(params.id);
 
