@@ -6,14 +6,6 @@ import WatchlistButton from '@/components/WatchlistButton';
 const TMDB_IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/original';
 const TMDB_POSTER_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 
-// **THE FIX:** Define a Props type that includes both params and searchParams
-type Props = {
-    params: {
-        id: string;
-    };
-    searchParams: { [key: string]: string | string[] | undefined };
-};
-
 async function getMovieDetails(id: string): Promise<MovieDetails> {
     const apiKey = process.env.TMDB_API_KEY;
     if (!apiKey) {
@@ -27,8 +19,12 @@ async function getMovieDetails(id: string): Promise<MovieDetails> {
     return res.json();
 }
 
-// Use the complete Props type. We only need to destructure params for our use case.
-export default async function MovieDetailPage({ params }: Props) {
+// ✅ Fix here: correct parameter structure
+export default async function MovieDetailPage({
+    params,
+}: {
+    params: { id: string };
+}) {
     const movie = await getMovieDetails(params.id);
 
     const formatRuntime = (minutes: number) => {
@@ -39,7 +35,6 @@ export default async function MovieDetailPage({ params }: Props) {
 
     return (
         <div className="min-h-screen bg-gray-900 text-white">
-            {/* Backdrop */}
             <div className="relative h-96">
                 <Image
                     src={`${TMDB_IMAGE_BASE_URL}${movie.backdrop_path}`}
@@ -52,7 +47,6 @@ export default async function MovieDetailPage({ params }: Props) {
                 <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent"></div>
             </div>
 
-            {/* Content */}
             <div className="container mx-auto px-4 py-8 -mt-48 relative">
                 <div className="flex flex-col md:flex-row gap-8">
                     <div className="flex-shrink-0">
