@@ -1,13 +1,23 @@
 // app/movies/[id]/page.tsx
+import { MovieDetails } from '@/lib/types';
 import Image from 'next/image';
 import WatchlistButton from '@/components/WatchlistButton';
-import { MoviDetails } from '@/lib/types';
 
 const TMDB_IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/original';
 const TMDB_POSTER_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 
-async function getMovieDetails(id: string): Promise<MoviDetails> {
+// Define the Props type explicitly
+type Props = {
+    params: {
+        id: string;
+    };
+};
+
+async function getMovieDetails(id: string): Promise<MovieDetails> {
     const apiKey = process.env.TMDB_API_KEY;
+    if (!apiKey) {
+        throw new Error('TMDB_API_KEY is not defined in environment variables');
+    }
     const url = `https://api.themoviedb.org/3/movie/${id}?api_key=${apiKey}&language=en-US`;
     const res = await fetch(url);
     if (!res.ok) {
@@ -16,8 +26,8 @@ async function getMovieDetails(id: string): Promise<MoviDetails> {
     return res.json();
 }
 
-// THIS IS THE LINE WE ARE FIXING
-export default async function MovieDetailPage({ params }: { params: { id: string } }) {
+// Use the explicit Props type and destructure params from it
+export default async function MovieDetailPage({ params }: Props) {
     const movie = await getMovieDetails(params.id);
 
     const formatRuntime = (minutes: number) => {
