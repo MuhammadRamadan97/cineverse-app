@@ -23,7 +23,7 @@ async function getMovieDetails(id: string): Promise<MovieDetails> {
 export default async function MovieDetailPage({
     params,
 }: {
-    params: { id: any };
+    params: { id: string | number }
 }) {
     const movie = await getMovieDetails(params.id);
 
