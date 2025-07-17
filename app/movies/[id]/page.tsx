@@ -1,21 +1,22 @@
-import { MoviDetails } from "@/lib/types";
-import Image from "next/image";
-import WatchlistButton from "@/components/WatchlistButton";
+// app/movies/[id]/page.tsx
+import Image from 'next/image';
+import WatchlistButton from '@/components/WatchlistButton';
+import { MoviDetails } from '@/lib/types';
 
 const TMDB_IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/original';
 const TMDB_POSTER_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 
 async function getMovieDetails(id: string): Promise<MoviDetails> {
-    const apikey = process.env.TMDB_API_KEY;
-    const url = `https://api.themoviedb.org/3/movie/${id}?api_key=${apikey}&language=en-US`
+    const apiKey = process.env.TMDB_API_KEY;
+    const url = `https://api.themoviedb.org/3/movie/${id}?api_key=${apiKey}&language=en-US`;
     const res = await fetch(url);
     if (!res.ok) {
         throw new Error('Failed to fetch movie details');
     }
     return res.json();
-
 }
 
+// THIS IS THE LINE WE ARE FIXING
 export default async function MovieDetailPage({ params }: { params: { id: string } }) {
     const movie = await getMovieDetails(params.id);
 
@@ -27,7 +28,7 @@ export default async function MovieDetailPage({ params }: { params: { id: string
 
     return (
         <div className="min-h-screen bg-gray-900 text-white">
-            {/* backdrop */}
+            {/* Backdrop */}
             <div className="relative h-96">
                 <Image
                     src={`${TMDB_IMAGE_BASE_URL}${movie.backdrop_path}`}
@@ -36,10 +37,8 @@ export default async function MovieDetailPage({ params }: { params: { id: string
                     style={{ objectFit: 'cover' }}
                     className="opacity-30"
                     priority
-
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent"></div>
-
             </div>
 
             {/* Content */}
@@ -59,7 +58,7 @@ export default async function MovieDetailPage({ params }: { params: { id: string
                         <p className="text-lg text-gray-300 italic mb-4">{movie.tagline}</p>
                         <div className="flex items-center space-x-4 mb-4">
                             <span className="text-amber-400 font-bold text-lg">
-                                ★ {(movie.vote_average).toFixed(1)} / 10
+                                ★ {movie.vote_average.toFixed(1)} / 10
                             </span>
                             <span>•</span>
                             <span>{movie.release_date.substring(0, 4)}</span>
@@ -75,6 +74,7 @@ export default async function MovieDetailPage({ params }: { params: { id: string
                         </div>
                         <h2 className="text-2xl font-semibold mb-2">Overview</h2>
                         <p className="text-gray-300 leading-relaxed max-w-2xl">{movie.overview}</p>
+
                         <div className="mt-8">
                             <WatchlistButton movie={movie} />
                         </div>
@@ -82,5 +82,5 @@ export default async function MovieDetailPage({ params }: { params: { id: string
                 </div>
             </div>
         </div>
-    )
+    );
 }
